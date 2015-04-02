@@ -1,0 +1,470 @@
+#Frequently edited rules:
+   
+##user shadowbans
+###general user bans
+    priority: 800
+    author: ["sugerfreek", "GabeAsterd", "Mohamedelropy", "caamib", "9plus11equals", "stopGGtoday", "SaltyShill", "GGsucksAntiGGsucks", "Shiro-Sora", "anastus", "VDIGuy2203", "funkiemunkie", "Shiro-Sora", "socjuscause", "rbace23", "sabalgp", "PERSONA-", "SuccubusSlave", "FeministSpanker", "AntiGator", "INeed2no", "red5blog", "Devonus", "DoomFemme", "chickychickyparmparn", "tobydelamo", "GaymerGayz", "Congressbeta", "GhaziGhazi1", "batesman12", "Tvava", "br00ke27", "RaceTrumpsGender", "TheRemag2", "rannytran", "jamthooth", "hellsgoalie", "DC_PinkWash", "SeasidesAndSuicides", "Grummz", "Bapmomet", "Relefax", "ZerotheSJWHero", "eatmydickghazi", "XevenFlux", "FluxXeven", "throwitawayghazi", "paradoxofnight"]
+    action: spam
+
+---  
+
+###special user shadowban includes rule, for bad users that use similar usernames
+    priority: 800
+    author: 
+        name (includes): ["fuckghazi", "ghazidiot", "Dontyoufeeldumb", "LOLGamers", "br00ke27", "420KushGamer", "banmeplsfeminazis", "falconswing", "music33333"]
+    action: spam
+
+---
+
+###super special user shadowban rule - regex
+    priority: 800
+    author: 
+        name (regex): ["jace[0-9]+ever"]
+    action: spam
+ 
+---
+
+##User moderation
+###report moderated users: for users who aren't *too* bad.
+    author: ["this_user_is_under_moderation_review"]
+    action: report
+    report_reason: "this user is on the moderated users list - please review this {{type}}"
+
+---
+
+###remove/modmail moderated users: for users in which one more step = ban
+    author: ["Asingleshadeofgray"]
+    action: remove
+    modmail_subject: "moderated user - please review"
+    modmail: |
+        Title: {{title}}
+        
+        URL: {{url}}
+        
+        Full body: {{body}}
+        
+        Permanent link: {{permalink}}
+        
+        ---
+        
+        This is a notice that /u/{{author}} is on the moderated users list. As such, the above {{kind}} has been removed pending moderator review. Please review this {{kind}} carefully; if this is the final straw for this user, [feel free to ban them](/r/{{subreddit}}/about/banned).
+
+---
+
+##Locked threads
+    type: comment
+    parent_submission: 
+        id: ["2mm6ux", "2mseyq", "2twgk4", "2twgk4", "2usmx2", "2w7tcy", "306my7", "30jefl"]
+    action: remove
+    
+---
+
+##Moderated threads
+    type: comment
+    parent_submission: 
+        id: ["2n5f9j", "2ug4jt", "31594h"]
+    action: report
+    report_reason: "Moderated thread - all comments are reported for review."
+    
+---
+
+#Remove anything from users with less than 0 comment karma. Removes trolls, racists, etc.
+    priority: 500
+    author:
+        comment_karma: "< 1"
+        is_moderator: false
+        ~name: ["Romney2008", "Prosthemadera", "sgalvezs", "Ch1mpanz33M1nd53t", "SallyHemmings", "vattenpuss"]
+    action: remove
+    modmail_subject: low karma user
+    modmail: |
+        The following {{kind}} by /u/{{author}} has been removed as they have less than 1 comment karma
+
+        ---
+    
+        Title: {{title}}  
+        
+        URL: {{url}}          
+        
+        Body: {{body}}   
+
+---
+
+#Remove posts containing words typical of GG trolls
+    priority: 450
+    title+body (regex, includes): ["hugbox", "ban( me|ned)", "circlejerk", "echo chamber", "other[ -]?kin", "\\-kin"]
+    author: 
+        ~flair_text (regex): [".+"]
+    action: report
+    report_reason: possible troll - {{match-1}}
+    
+---
+
+#banned phrases
+##regex rule
+    priority: 450
+    title+body (regex, includes): ["skype[ -_]logs?"]
+    action: remove
+
+---
+
+##includes rule
+    priority: 450
+    body (includes): ["That wasn't a rape joke. He was joking about melodramatic definitions of rape, not rape itself."]
+    action: remove
+
+---
+
+#link enforcement
+##remove direct Reddit and Twitter links
+    domain: [reddit.com, twitter.com, youtube.com, youtu.be]
+    action: remove
+    comment: |
+        Hi! You might not be aware of this (or maybe you were totally aware but you totally forgot - that has happened at least once!), but /r/GamerGhazi has recently added some new [posting guidelines](https://www.reddit.com/r/GamerGhazi/comments/2yzcus/announcing_our_new_rules/) in order to reduce the number of low-effort posts. As such, links to Reddit, Twitter, and YouTube must be submitted as self-posts, along with a short paragraph explaining why you found your link to be relevant to the topic of gaming and diversity. 
+        
+        In addition, we have additional guidelines regarding Reddit and Twitter links:
+        
+        * links to Reddit posts must have at least ten comments
+        * links to Reddit comments must have at least 10 upvotes or -10 downvotes
+        * Twitter links must have over 10 favs or 10 retweets.
+        
+        Please ensure that your link follows the above guidelines before resubmitting as a self-text. Thanks!
+
+---
+
+##moderated check for archive.today links
+    domain: [archive.today]
+    action: remove
+    modmail_subject: "an archive.today link was just posted"
+    modmail: |
+        Title: {{title}}
+
+        URL: {{url}}
+
+        Permanent link: {{permalink}}
+
+        ---
+
+        The above link needs to be verified to ensure this is not a Tweet or Reddit comment/post. If this is a Tweet or Reddit comment/post, please leave a comment letting them know about our posting guidelines.
+    
+---
+
+##np-link enforcement for comments and self-posts
+    moderators_exempt: false
+    body+url (regex, includes): ["(https?://|\\s|^)reddit\\.com\\/r\\/", "(https?://|\\s|^)redd\\.it"]
+    ~body+url#exceptions (regex, includes): ["gamerghazi", "/wiki"]
+    ~author: ["versebot", "xkcd_transcriber"]
+    action: remove
+    comment: |  
+        Hi! Unfortunately, your link(s) to Reddit is not a no-participation (i.e. http://np.reddit.com or https://np.reddit.com) link. We require all links to Reddit to be non-participation links to help mitgate brigading. Because of this, this {{kind}} has been removed. Please feel free to edit this with the required non-participation link(s); once you do so, we can approve the post immediately. 
+
+        (You can easily do this by replacing the 'www' part with 'np' in the URL. Make sure you keep the http:// or https:// part!)
+        
+        Note: as part of my programming, a mod message regarding this removal has been sent to the moderators here, so there's no need to message us!
+    modmail_subject: non-participation link 
+    modmail: |
+        {{permalink}}
+        
+        This submission by /u/{{author}} will need to be approved if and when the user changes the links to np. Heads up.
+        
+        ---
+        
+        Title: {{title}}
+        
+        Body: {{body}}
+
+---
+
+##remove shitty np-link fails
+    moderators_exempt: false
+    body (regex, includes): ["https?://www\\.np\\.reddit\\.com", "https?://np\\.www\\.reddit\\.com"]
+    action: remove
+    comment: |
+        You screwed up your np-link. No particpation links are `np.reddit.com`, not `np.www.reddit.com` or `www.np.reddit.com`. The latter two tend to piss off browsers. Please fix this so that a moderator can reapprove it.
+
+---
+
+##No [OT] tags
+    title (regex, includes): ["[.*OT.*]", "(.*OT.*)", "[.*off[ -]topic.*]", "(.*off[ -]topic.*)"]
+    action: remove
+    comment: |
+        We're sorry, but [we've discontinued the use of off-topic tags](http://www.reddit.com/r/GamerGhazi/comments/2yzcus/announcing_our_new_rules/). Because titles cannot be edited, your submission has been removed. Please resubmit this without the off-topic tag. If you're not sure whether your submission fits the topic of gaming and diversity, please feel free to [message the moderators](http://www.reddit.com/message/compose?to=%2Fr%2FGamerGhazi).
+
+---
+
+# totes_meta_bot 
+##general remove and modmail
+    priority: 500
+    author: 
+        name (regex, includes): [totes_meta_bot, TotesMessenger, originallinkbot, Meta_Bot2, "meta.{0,2}bot"]
+    action: remove
+    modmail_subject: meta linking tattle tale
+    modmail: |
+        /u/{{author}} has tattled on something.
+        
+        Body: {{body}}
+    
+---
+
+##just remove, no modmail: for subs I don't give a shit about
+    priority: 550
+    author: [totes_meta_bot, TotesMessenger, originallinkbot, Meta_Bot2]
+    body (regex, includes): ["\\/r\\/(Anarschism|AMRsucks|SRSsucks|fuckghazi|angryblackladies)"]
+    action: remove
+
+---
+
+#Domain bans 
+##General domains
+    domain: ["thesentinelwire.com", "boredbrainless.com", "encyclopediadramatica.se", "8ch.net"]
+    action: spam
+    
+---
+
+##Baphomet
+###domain ban
+    domain: [baphomet.ga]
+    action: spam
+
+---
+###regex ban
+    title+body (regex): [baphomet\\.ga, encyclopediadramatica\\.se]
+    action: spam
+
+---
+
+##youtube domain bans - media author
+    type: submission
+    media_author_url (includes): ["LulzTalkRadio"]
+    action: remove
+    
+---
+
+#Troll prevention
+##Report submissions from low-karma users that are fairly new.
+    type: submission
+    domain: self.gamerghazi
+    author:
+        account_age: "< 9"
+        combined_karma: "< 10"
+        is_moderator: false
+    action: report
+    report_reason: "Submission by new user (<9 days) with low karma (<10 karma) "
+    
+---
+
+#Word filters
+##report Profanity 
+    title+body (regex): ["b(i|\\*)o?(tch|\\*{3})(y|es)?","cocks?([ -]?suck(ers?|ing)?)?","cum(ming|[ -]shots?)?","cunts?", "pussy?", "whore?", "slut?"]
+    ~title+body#exempt (regex): [slut sham(e|ed|ing)"]
+    ignore_blockquotes: true
+    action: report
+    report_reason: "Profanity/hositility - {{match-1}}"
+    
+---
+
+##Simple slurs
+    title+body (regex): ["autists?", "lesbos?", "carpet ?-? ?munchers?", "camel ?-? ?jocke(y|ies)", "wogs?", "coons?", heeb, "(fuck|re|lib)tard(s|ed|ness)?", "poofs?", "krauts?", "japs", nip, nig, wop, beaner, "cock ?-? sucker(s|ing)", abo, boong, "chinks?", "surrender monk(ey|ies)", "kaff?irs?", "ragheads?", "pik(ey|ies)", "(towel|rag) ?-? ?heads?", "skanks?",  greatapes, "polfacts?", "sperg(ing|ed|lord)?"]
+    ~title+body#2 (regex): ["racoons?", "maine coons?", "coonhounds?"]
+    ignore_blockquotes: true
+    action: report
+    report_reason: "Slur - {{match-1}}"
+    
+---
+
+##Possible dog whistle bullshit
+    title+body (includes-word): ["thug", "thugs", "blacks", "goon", "goons", "hoodrat", "hoodrats", "hood rat", "hood rats", "groid", "groids", "mollycyrus", "mollyc", "@skyeedooee_", "skye"]
+    ignore_blockquotes: true
+    action: report
+    report_reason: "Racism - {{match-1}}"
+    
+---
+
+##Slurs that have multiple ways of spelling and use in sentences. 
+    title+body (regex, includes-word): ["n[i!*#]+gg?(rs?|lets?|ett?es?|ress|esses?|ers?|oe?s?|ae|as?|irs?|!rs?|s|0rs?|r0e?s?)", "k[iy]kes?", "beaners?", "spick?s?", "wetbacks?", "gooks?", "chinks?", "fagg?([eio]t)?(ry)?s?", "d[iy]kes?", "sluts?", "whores?", "bitch(es)?", "trann(y|ie)s?", "shemales?", "honk(ie|y)", "pak(i|ee)", "cock[- ]?sucker", "femi-?nazi", "shit[- ]?lord", "fur[- ]fag", "muff[ -]?div(er?|ing)", "pol[el][ -]?smoke(ing|r)?", "porch ?monke?y", "white ?guild", "coolies?"]
+    ~title+body#exempt (regex, includes): ["slut sham(e|ed|ing)"]
+    ignore_blockquotes: true
+    action: report
+    report_reason: "Slur - {{match-1}}"
+    
+---
+
+##Slurs that have multiple ways of spelling and use in sentences. Testing out some new matches, hence the second rule
+    title+body (regex, includes-word): ["chimps?", "apes?", "coons?","black ?(people'?s?|girl'?s?|boy'?s?|women|woman'?s?|men'?s?|man'?s?|person'?s?)", "j[e3]+ws?", "zionis(ts?|m)", "bigot(s|ed)", "lady\\s-?boys?", "mignorant", "ape ?-?fricans?", "pike?(ys?|ies)", "tar ?bab(ys?|ies?)", "pakis?"]
+    ignore_blockquotes: true
+    action: report
+    report_reason: "Possible slur - - {{match-1}}"
+    
+---
+
+##Usernames that are a tell tale sign of bigotry
+    author: 
+        name (includes): ["nigg", "j3w", "neocon", "rape", "cunt", "fagg", "1488", "niglet"]
+        ~name#2 (includes): ["grape", "stopsayingfaggot"]
+    action: remove
+    modmail_subject: naughty username
+    modmail: |
+        Title: {{title}}
+        
+        URL: {{url}}
+        
+        Body: {{body}}
+        
+        Permanent link: {{permalink}}
+        
+        ---
+        
+        The above {{kind}} by /u/{{author}}  was removed due to the match **{{match-1}}** in the username.
+    
+---
+
+##kiwikku
+    title+body (regex, includes-word): ["kiwikku"]
+    action: report
+    report_reason: "Possible harassment - - {{match-1}}"
+    
+---
+
+#Mod notification and removal for reported items
+##mod notification for 2 reports
+    reports: 2
+    modmail: |
+        {{permalink}}
+
+        The above {{kind}} by /u/{{author}} has received 2 reports. Please investigate. If this comment is not a problem, hit "approve" or "ignore reports" to keep it from being automatically removed if it receives a third report. 
+
+        ---
+
+        Title: {{title}} 
+
+        URL: {{url}}   
+
+        Body: {{body}}
+
+---
+
+##removal for 3 reports - P:none
+    reports: 3
+    action: remove
+
+---
+#Dox Detection and User Safety - stole this from /r/femmethoughts, but will be useful here.
+
+##Phone Numbers - P:1000
+#####Catches phone numbers for: US, UK, NZ, Aus., Mex., and most others, but makes exceptions for toll-free, obviously fake, and certain well-known phone numbers.
+    priority: 1000
+    title+body (regex): ["\\(?(\\d{3})\\)?([ .-])(\\d{3})([ .-])(\\d{4})","(\\d{5})([ .-])(\\d{6})","\\(?(\\d{4})\\)?([ .-])(\\d{3})([ .-])(\\d{3})","\\(?(\\d{2})\\)?([ .-])(\\d{4})([ .-])(\\d{4})","\\(?(\\d{2})\\)?([ .-])(\\d{3})([ .-])(\\d{4})","\\+([\\d ]{10,15})"]
+    ~body+url: "(\\[[^\\]]+?\\]\\()?(https?://|www\\.)\\S+\\)?"
+    ~body+title+url: ["(800|855|866|877|888|007|911)\\W*\\d{3}\\W*\\d{4}", "\\d{3}\\W*555\\W*\\d{4}", "999-999-9999", "000-000-0000", "123-456-7890", "111-111-1111", "012-345-6789", "888-888-8888", "281\\W*330\\W*8004", "777-777-7777", "678-999-8212", "999([ .-])119([ .-])7253","0118 999 811","0118 999 881", "867( ?- ?| )?5309", "505\\W*503\\W*4455", "1024 2048"]
+    action: remove
+    modmail_subject: Doxxing Alert!
+    modmail: |
+
+        {{permalink}}
+
+        The above {{kind}} by /u/{{author}} was removed because it contained a possible phone number. Please investigate immediately.
+
+        If the user is doxxing, [ban them](/r/{{subreddit}}/about/banned) and [report them to the reddit admins](http://www.reddit.com/message/compose?to=%2Fr%2Freddit.com&subject=Doxxing%20Report:%20%2Fu%2F{{author}}&message=%2Fu%2F{{author}}%20posted%20a%20phone%20number:%20{{permalink}}) immediately.
+
+        This rule is triggered before *all* other rules. If this is not a doxx, please check the comment *thoroughly* before approving. 
+
+        ---
+
+        Title: {{title}} 
+
+        Body: {{body}}
+
+---
+
+##Email Addresses - P:1000
+    priority: 1000
+    title+body (regex): "[!#$%&'*+./0-9=?_`a-z{|}~^-]+@[.a-z-]+\\.(?:com|org|net)"
+    ~body+title: [sample@femmethoughts.com]
+    action: remove
+    modmail_subject: Doxxing Alert!
+    modmail: |
+
+        {{permalink}}
+
+        The above {{kind}} by /u/{{author}} was removed because it contained a possible email address. Please investigate immediately.
+
+        If the user is doxxing, [ban them](/r/{{subreddit}}/about/banned) and [report them to the reddit admins](http://www.reddit.com/message/compose?to=%2Fr%2Freddit.com&subject=Doxxing%20Report:%20%2Fu%2F{{author}}&message=%2Fu%2F{{author}}%20posted%20an%20email%20address:%20{{permalink}}) immediately.
+
+        This rule is triggered before *all* other rules. If this is not a doxx, please check the comment *thoroughly* before approving. 
+
+        ---
+
+        Title: {{title}} 
+
+        Body: {{body}}
+
+---
+
+##Credit Card Numbers - P:1000
+    priority: 1000
+    title+body (regex): "\\b(?:4[0-9]{12}(?:[0-9]{3})?|5[12345][0-9]{14}|3[47][0-9]{13}|3(?:0[012345]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35[0-9]{3})[0-9]{11})\\b"
+    action: remove
+    modmail_subject: Doxxing Alert!
+    modmail: |
+
+        {{permalink}}
+
+        The above {{kind}} by /u/{{author}} was removed because it contained a possible credit card number. Please investigate immediately.
+
+        If the user is doxxing, [ban them](/r/{{subreddit}}/about/banned) and [report them to the reddit admins](http://www.reddit.com/message/compose?to=%2Fr%2Freddit.com&subject=Doxxing%20Report:%20%2Fu%2F{{author}}&message=%2Fu%2F{{author}}%20posted%20a%20credit%20card%20number:%20{{permalink}}) immediately.
+
+        This rule is triggered before *all* other rules. If this is not a doxx, please check the comment *thoroughly* before approving. 
+
+        ---
+
+        Title: {{title}} 
+
+        Body: {{body}}
+
+---
+
+##IPv4 Addresses - P:1000
+    priority: 1000
+    title+body (regex): "\\b[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\b"
+    action: remove
+    modmail_subject: Doxxing Alert!
+    modmail: |
+
+        {{permalink}}
+
+        The above {{kind}} by /u/{{author}} was removed because it contained a possible IP address. Please investigate immediately.
+
+        If the user is doxxing, [ban them](/r/{{subreddit}}/about/banned) and [report them to the reddit admins](http://www.reddit.com/message/compose?to=%2Fr%2Freddit.com&subject=Doxxing%20Report:%20%2Fu%2F{{author}}&message=%2Fu%2F{{author}}%20posted%20an%20IP%20address:%20{{permalink}}) immediately.
+
+        This rule is triggered before *all* other rules. If this is not a doxx, please check the comment *thoroughly* before approving. 
+
+        ---
+
+        Title: {{title}} 
+
+        Body: {{body}}
+
+---
+
+##Street Addresses - P:1000
+#####Catches US-style street addresses. Does not catch PO boxes
+    priority: 1000
+    title+body (regex): ["\\W[A-Za-z]?\\d{1,6}[A-Za-z]? (E(\\.|ast)?|W(\\.|est)?|N(\\.|orth)?|S(\\.|outh)? )?[\\p{Pi}\\p{Pf}]?\\w+( \\w+)?[\\p{Pi}\\p{Pf}]? (st(reet)?|ave(enue)?|r(oa)?d|dr(ive)?|c(our)?t|blvd|boulevard|lane|ln|highway|hwy|route|rt)"]
+    ~body+title (regex): [second drive, minute drive, hour drive, day drive, week drive, 123 Main St, 123 Main Street, "221b? baker (st|street)", 21 Jump Street, supreme court case]
+    action: remove
+    modmail_subject: Doxxing Alert!
+    modmail: |
+        {{permalink}}
+
+        The above {{kind}} by /u/{{author}} was removed because it contained a possible street address. Please investigate immediately.
+
+        If the user is doxxing, [ban them](/r/{{subreddit}}/about/banned) and [report them to the reddit admins](http://www.reddit.com/message/compose?to=%2Fr%2Freddit.com&subject=Doxxing%20Report:%20%2Fu%2F{{author}}&message=%2Fu%2F{{author}}%20posted%20a%20street%20address:%20{{permalink}}) immediately.
+
+        This rule is triggered before *all* other rules. If this is not a doxx, please check the comment *thoroughly* before approving. 
+
+        ---
+
+        Title: {{title}} 
+
+        Body: {{body}}
+        
+---
