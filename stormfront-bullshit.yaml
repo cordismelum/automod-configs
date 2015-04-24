@@ -22,7 +22,7 @@ modmail: |
 ---
 
 #stormfront bullshit - report
-title+body: ["affirmative action", "al sharpton", "eric holder", "final soclution", "frankfurt school", "institute for historical review", "jesse jackson", "metapedia", "miscegenation", "multicultural(ism)?", "ra[iy]cis[mt]?", "steryotypes?" "(3rd|third) world"]
+title+body: ["affirmative action", "al sharpton", "eric holder", "final soclution", "frankfurt school", "institute for historical review", "jesse jackson", "metapedia", "miscegenation", "multicultural(ism)?", "ra[iy]cis[mt]?", "stereotypes?" "(3rd|third) world"]
 modifiers: [regex, includes]
 action: report
 report_reason: "stormfront might be leaking - {{match-1}}"
